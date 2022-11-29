@@ -14,38 +14,28 @@ import java.util.concurrent.TimeUnit;
 public class Hooks {
 
     @Before
-    public void setUp(){
-
-        System.out.println("this is coming from BEFORE");
+    public void setUp() {
         Driver.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         Driver.getDriver().manage().window().maximize();
         Driver.getDriver().get(ConfigurationReader.getProperty("library_url"));
-
-
     }
 
     @After
-    public void tearDown(Scenario scenario){
-        System.out.println("this is coming from AFTER");
-
-        if(scenario.isFailed()){
+    public void tearDown(Scenario scenario) {
+        if (scenario.isFailed()) {
             final byte[] screenshot = ((TakesScreenshot) Driver.getDriver()).getScreenshotAs(OutputType.BYTES);
-            scenario.attach(screenshot,"image/png","screenshot");
+            scenario.attach(screenshot, "image/png", "screenshot");
         }
-
         Driver.closeDriver();
-
     }
 
     @Before("@db")
-    public void setUpDB(){
+    public void setUpDB() {
         DB_Util.createConnection();
-        System.out.println("------Connecting to DB------");
     }
 
     @After("@db")
-    public void destroyDB(){
+    public void destroyDB() {
         DB_Util.destroy();
-        System.out.println("-----Closing DB connection-----");
     }
 }
